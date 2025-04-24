@@ -1,4 +1,4 @@
-﻿using System.Text.RegularExpressions; //было в шаблоне
+﻿using System.Text.RegularExpressions;
 using System;
 using System.Collections.Generic;
 
