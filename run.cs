@@ -1,22 +1,24 @@
 ﻿using System.Text.RegularExpressions; //было в шаблоне
-
+using System;
+using System.Collections.Generic;
 
 class HotelCapacity
 {
     private enum eventType
-    { 
-        checkOut,
-        checkIn
+    {
+        checkOut = -1,
+        checkIn = 1
     }
 
     static bool CheckCapacity(int maxCapacity, List<Guest> guests)
     {
-        var hotelEvents = new List<(string date, eventType eventType)>(); //храним весь список событий
+        var hotelEvents = new List<(DateTime date, eventType eventType)>(); //храним весь список событий
+                                                                            //дату можно было оставить строкой, но на всякий случай DateTime
 
         foreach (var guest in guests) //полоняем список событий, помечая, какое из них заезд гостя, какое выезд
         {
-            hotelEvents.Add((guest.CheckOut, eventType.checkOut));
-            hotelEvents.Add((guest.CheckIn, eventType.checkIn));
+            hotelEvents.Add((DateTime.Parse(guest.CheckOut), eventType.checkOut));
+            hotelEvents.Add((DateTime.Parse(guest.CheckIn), eventType.checkIn));
         }
 
         hotelEvents.Sort(); //сортируем все события, сначала будут сортироваться по первому
@@ -26,9 +28,9 @@ class HotelCapacity
 
         foreach (var hotelEvent in hotelEvents)
         {
-            currentGuests += hotelEvent.eventType == eventType.checkOut ? -1 : 1; //если гость заехал, то количество
-                                                                                  //гостей увеличится на 1, если
-                                                                                  //уехал, то уменьшится
+            currentGuests += (int)hotelEvent.eventType; //если гость заехал, то количество
+                                                        //гостей увеличится на 1, если
+                                                        //уехал, то уменьшится
             if (currentGuests > maxCapacity) //если гостей больше, чем помещается, то не сможем уместить всех
                 return false;
         }
